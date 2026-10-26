@@ -24,6 +24,7 @@
             "name": "id",
             "in": "path",
             "required": true,
+            "description": "Meter ID (e.g., J100000)",
             "schema": {
               "type": "string"
             }
@@ -31,10 +32,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Energy data retrieved successfully"
-          },
-          "500": {
-            "description": "Internal server error"
+            "description": "Successful response"
           }
         }
       }
