@@ -2,7 +2,9 @@
 
 A Node.js and Express API wrapper for the legacy Urja Meter Ops portal.
 
-**GitHub Repository:** [Vamsikrishna485/flock-meter-api](https://github.com/Vamsikrishna485/flock-meter-api)
+**GitHub Repository:** [flock-meter-api](https://github.com/Vamsikrishna485/flock-meter-api)
+
+**Live API:** https://flock-meter-api.onrender.com
 
 ---
 
@@ -10,11 +12,11 @@ A Node.js and Express API wrapper for the legacy Urja Meter Ops portal.
 
 The Urja Meter Ops portal is used by utility operations staff to access smart meter information and energy consumption readings.
 
-The portal does not provide a documented public API for external consumers. This project aims to provide a clean REST API layer that retrieves meter information from the existing portal and returns structured JSON responses.
+The portal does not provide a documented public API for external consumers. This project provides a REST API layer that retrieves meter information from the existing portal and returns JSON responses.
 
 The service follows a Backend-for-Frontend (BFF) approach, separating the consumer-facing API from the legacy portal.
 
-### Project Objectives
+## Project Objectives
 
 - Implement programmatic authentication with the portal.
 - Manage portal session cookies.
@@ -41,13 +43,61 @@ The service follows a Backend-for-Frontend (BFF) approach, separating the consum
 | GET | `/api/meters/:id/energy` | Retrieve meter energy consumption data |
 | GET | `/api/meters/:id/geo` | Retrieve meter geographical information |
 
-### Example Request
+## Live Deployment
+
+The API is deployed on Render.
+
+**Base URL:** https://flock-meter-api.onrender.com
+
+### Live API Requests
+
+- [API Status](https://flock-meter-api.onrender.com/)
+- [Meter Energy API](https://flock-meter-api.onrender.com/api/meters/J100000/energy)
+- [Meter Geo API](https://flock-meter-api.onrender.com/api/meters/J100000/geo)
+
+The meter ID used in these examples is `J100000`.
+
+## Example Requests
+
+### Check API Status
 
 ```http
-GET http://localhost:3000/api/meters/J100000/energy
+GET /
 ```
 
-### Example Success Response
+Local request:
+
+```bash
+curl http://localhost:3000/
+```
+
+### Retrieve Meter Energy Data
+
+```http
+GET /api/meters/J100000/energy
+```
+
+Local request:
+
+```bash
+curl http://localhost:3000/api/meters/J100000/energy
+```
+
+### Retrieve Meter Geographical Data
+
+```http
+GET /api/meters/J100000/geo
+```
+
+Local request:
+
+```bash
+curl http://localhost:3000/api/meters/J100000/geo
+```
+
+## Example Energy Response
+
+The following is an illustrative response based on a portal reading observed during development. Actual response fields and readings depend on the portal.
 
 ```json
 {
@@ -66,9 +116,7 @@ GET http://localhost:3000/api/meters/J100000/energy
 }
 ```
 
-*Note: This is an illustrative response based on a portal reading observed during development. Actual response fields and readings depend on the portal.*
-
-### Example Error Response
+## Example Error Response
 
 ```json
 {
@@ -76,6 +124,8 @@ GET http://localhost:3000/api/meters/J100000/energy
   "message": "Unable to fetch meter energy data"
 }
 ```
+
+The actual error response depends on the endpoint implementation and the portal response.
 
 ## Installation and Setup
 
@@ -105,7 +155,7 @@ npm install
 
 ### 4. Configure Environment Variables
 
-Create a `.env` file in the project root.
+Create a `.env` file in the project root, alongside `package.json`.
 
 ```env
 PORT=3000
@@ -114,14 +164,16 @@ PORTAL_EMAIL=your_portal_username
 PORTAL_PASSWORD=your_portal_password
 ```
 
-Replace the portal username and password with the credentials provided for the assignment.
+Replace the placeholder username and password with the credentials provided for the assignment.
+
+The application should read these values from environment variables.
 
 **Security:** Never commit `.env` or portal session cookies to GitHub.
 
 ### 5. Start the Server
 
 ```bash
-node server.js
+node src/index.js
 ```
 
 The API service should run at:
@@ -130,33 +182,14 @@ The API service should run at:
 http://localhost:3000
 ```
 
-## Sample API Requests
-
-### Check API Status
-
-```bash
-curl http://localhost:3000/
-```
-
-### Retrieve Meter Energy Data
-
-```bash
-curl http://localhost:3000/api/meters/J100000/energy
-```
-
-### Retrieve Meter Geographical Data
-
-```bash
-curl http://localhost:3000/api/meters/J100000/geo
-```
-
 ## Project Structure
 
 ```text
 flock-meter-api/
 │
-├── server.js
-├── portal.js
+├── src/
+│   └── index.js
+│
 ├── package.json
 ├── package-lock.json
 ├── .env
@@ -166,21 +199,24 @@ flock-meter-api/
 └── openapi.json
 ```
 
+This structure represents the main application entry point and documentation files.
+
 ## Authentication and Session Management
 
-The service is designed to authenticate with the existing portal using the assignment-provided operator credentials.
+The service authenticates with the existing portal using the assignment-provided operator credentials.
 
 The portal uses session-based authentication.
 
-The intended authentication workflow is:
+The authentication workflow is:
 
 1. Submit login credentials to the portal.
 2. Receive the portal authentication response.
-3. Capture and maintain the session cookie.
-4. Use the authenticated session to request meter information.
-5. Return the retrieved data through the wrapper API.
+3. Capture the authentication session cookie.
+4. Maintain the session cookie.
+5. Use the authenticated session to request meter information.
+6. Return the retrieved data through the wrapper API.
 
-Portal authentication and session behavior are documented in `PROTOCOL.md`.
+Portal authentication and session behavior are documented in [PROTOCOL.md](./PROTOCOL.md).
 
 ## Assumptions
 
@@ -233,52 +269,65 @@ The following features are outside the initial implementation scope:
 - Persistent caching.
 - Bulk meter retrieval.
 
+These features were excluded to focus on implementing and documenting the essential API endpoints within the assignment scope.
+
 ## Future Improvements
 
 With additional development time, the following improvements could be implemented:
 
-1. Add automated tests using Jest and Supertest.
-2. Implement session expiration detection and automatic reauthentication.
-3. Add caching to reduce repeated portal requests.
-4. Add meter network hierarchy endpoints.
-5. Add filtering and pagination.
-6. Improve error handling and validation.
-7. Add structured logging.
-8. Add bulk meter data retrieval.
+- Add automated tests using Jest and Supertest.
+- Implement session expiration detection and automatic reauthentication.
+- Add caching to reduce repeated portal requests.
+- Add meter network hierarchy endpoints.
+- Add filtering and pagination.
+- Improve error handling and validation.
+- Add structured logging.
+- Add bulk meter data retrieval.
 
 ## API Documentation
 
 - [PROTOCOL.md](./PROTOCOL.md) – Portal authentication, endpoints, data behavior, and integration details.
 - [openapi.json](./openapi.json) – OpenAPI 3.x specification for the wrapper API.
 
+The protocol document describes the portal behavior discovered during development.
+
+The OpenAPI specification describes the consumer-facing REST endpoints exposed by this service.
+
 ## Reflection
 
 ### 1. What assumptions did you make?
 
-I assumed that the existing portal could be accessed through its internal HTTP endpoints and that the portal's authentication mechanism could be reused to retrieve meter information programmatically.
+I assumed that the existing portal could be accessed through its HTTP endpoints and that the portal's authentication mechanism could be reused to retrieve meter information programmatically.
 
 I also assumed that meter identifiers supplied by consumers would correspond to valid identifiers in the portal.
 
-### 2. What would you improve with more time?
+### 2. Which part was the most difficult, and how did you get unstuck?
+
+The most challenging part was understanding the portal's authentication mechanism and how its session cookies are used when accessing protected meter endpoints.
+
+I explored the portal's network requests and used the observed request behavior to implement the API wrapper.
+
+### 3. If you had another day, what would you improve?
 
 I would improve authentication reliability, add automated tests, implement caching, and provide additional endpoints for meter hierarchy information.
 
 I would also improve error handling so that authentication failures, invalid meter identifiers, and portal service errors are returned with appropriate API status codes.
 
-### 3. What was the most challenging part?
+### 4. What mistake did you make while solving this?
 
-The most challenging part was understanding the portal's authentication mechanism and how its session cookies are used when accessing protected meter endpoints.
+During development, I encountered issues with the application configuration and deployment setup while integrating the portal endpoints.
 
-### 4. What did you learn?
+I resolved these issues by testing the application locally, checking the API responses, and updating the implementation.
 
-I learned how to inspect HTTP requests, understand existing portal endpoints, structure an Express API, and design a wrapper service that separates an external API interface from a legacy application.
+### 5. If you were reviewing your own submission, what would you criticize?
 
----
+I would criticize the limited automated testing, dependence on the legacy portal, and lack of advanced session recovery.
+
+I would also improve validation, error handling, and documentation of actual portal response structures.
 
 ## Author
 
 **Vamsi Krishna**
 
 GitHub: [Vamsikrishna485](https://github.com/Vamsikrishna485)
-
 Repository: [flock-meter-api](https://github.com/Vamsikrishna485/flock-meter-api)
